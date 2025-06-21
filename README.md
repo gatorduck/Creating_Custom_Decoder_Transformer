@@ -42,13 +42,47 @@ vectorize_layer = layers.TextVectorization(
 This is the end result. We consider up to 50 sequential diagnosis codes, padding any with 0s to indicate the string has come to an end.
 
 ```python
-original dx sequence
+# original dx sequence
  1970 6186 29623 3569
-token representation after appling vectorization layer
+# token representation after appling vectorization layer
  [ 222 1112  377  725    0    0    0    0    0    0    0    0    0    0
     0    0    0    0    0    0    0    0    0    0    0    0    0    0
     0    0    0    0    0    0    0    0    0    0    0    0    0    0
     0    0    0    0    0    0    0    0    0]
+
+```
+
+To train our decoder-only transformer, we first apply the prepare_inputs() function to structure the dataset for autoregressive learning. This setup enables the model to learn iteratively—generating one token at a time based solely on previously seen tokens.
+
+The function tokenizes each sequence, then shifts it to create input–target pairs:
+
+The input x contains all tokens up to position i.
+
+The target y is the token at position i+1.
+
+In effect, the model is trained to predict the next token, having seen everything up to that point. For example:
+
+It begins with token 22 and learns to predict 1112.
+
+Then, given the sequence [22, 1112], it predicts 377.
+
+And so on—each prediction builds recursively on the last.
+
+This approach mirrors how the model will behave at inference time, progressively constructing sequences one token at a time from left to right.
+
+```python
+train_ds = sequence_ds.map(prepare_inputs)
+```
+
+```python
+First Input (x): [ 222 1112  377  725    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0]
+First Target (y): [1112  377  725    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0]
 
 ```
 
