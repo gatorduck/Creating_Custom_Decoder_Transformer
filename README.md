@@ -1,1 +1,2 @@
 
+My motivation is inspired by current large language models trained on sequences of token in the shape of words. In this case, each diagnosis code (like an ICD-10 code) is treated as a token in a sequence, just like a word in a sentence. But instead of natural language, the sequence represents a patient’s chronological medical history. The goal of this custom decoder is to learn temporal patterns or predict future diagnoses.
