@@ -123,7 +123,7 @@ Next step uses Keras functional approach to build our model, the first several l
     transformer_block = TransformerBlock(EMBED_DIM, NUM_HEADS, FEED_FOWARD_DIM) # attention layer + hidden layer (neural network)
     x = transformer_block(x)
     outputs = layers.Dense(VOCAB_SIZE)(x) # output layer - dependent on mutliclass classification, in this case all possible outcomes or our total vocab (dx) size
-    model = models.Model(inputs=inputs, outputs=[outputs, x]) # create our model, specify which inputs and outputs to use
+    model = models.Model(inputs=inputs, outputs=[outputs, x]) # create our model, specify which inputs and outputs to use, within our outputs we are returning two sets of data, outputs which is, and x which are our attention scores
 
 ```
 
@@ -165,7 +165,7 @@ class TransformerBlock(layers.Layer):
 ```
 
 
-All the action occurs in our MultiHeadAttentionLayer (1). This is where we calculate query, key, and value. To keep it simple,, lets observe our sequence  [1970 6186 29623 3569] or token [ 222 1112  377  725 ... ].
+All the action occurs in our MultiHeadAttentionLayer (1). This is where we calculate query, key, and value. To keep it simple,, lets observe our sequence  [1970 6186 29623 3569] or token [ 222 1112  377  725 ...0 0 0 0].
 
 1. Create a QUERY per token by taking the dot product of our original position encoded embeddings and weights
     
