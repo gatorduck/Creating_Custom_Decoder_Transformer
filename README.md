@@ -173,9 +173,9 @@ All the action occurs in our MultiHeadAttentionLayer (1). This is where we calcu
 
     $$ \ \begin{bmatrix} 0.05086685 \\ -0.05951506 \end{bmatrix} *
     \ \begin{bmatrix}
-       \frac{}{} & \frac{}{} &            \\[0.3em]
-       \frac{}{} &    W eights       & \frac{}{} \\[0.3em]
-                  & \frac{}{} & \frac{}{}
+       & \ &  \\
+       &  Weights & \\
+       &  & 
      \end{bmatrix} = \begin{bmatrix} {} \\ {Query} \\ {} \end{bmatrix} $$
 
     This should return 2 new numbers per token as we originally set our embedding size to 2.
@@ -186,9 +186,9 @@ All the action occurs in our MultiHeadAttentionLayer (1). This is where we calcu
 
     $$ \ \begin{bmatrix} 0.05086685 \\ -0.05951506 \end{bmatrix} *
     \ \begin{bmatrix}
-       \frac{}{} & \frac{}{} &            \\[0.3em]
-       \frac{}{} &    W eights       & \frac{}{} \\[0.3em]
-                  & \frac{}{} & \frac{}{}
+        & & \\
+        & Weights &  \\
+        & & 
      \end{bmatrix} = \begin{bmatrix} {} \\ {Key} \\ {} \end{bmatrix} $$
 
 
