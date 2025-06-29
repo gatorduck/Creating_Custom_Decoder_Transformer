@@ -167,24 +167,24 @@ class TransformerBlock(layers.Layer):
 
 All the action occurs in our MultiHeadAttentionLayer (1). This is where we calculate query, key, and value. To keep it simple,, lets observe our sequence  [1970 6186 29623 3569] or token [ 222 1112  377  725 ...0 0 0 0].
 
-1. Create a QUERY per token by taking the dot product of our original position encoded embeddings and weights. I like to think of these as a reference vector.
+1. Create a QUERY per token by taking the dot product of our original position encoded embeddings and weights. I like to think of these as a reference vector. This should return 2 new numbers per token as we originally set our embedding size to 2.
     
-     $$\vec{e}_{i}  W = \vec{q}_i $$
+$$\vec{e}_{i}  W = \vec{q}_i $$
 
-    $$ \ \begin{bmatrix} 0.05086685 \\ -0.05951506 \end{bmatrix} *
+$$ \ \begin{bmatrix} 0.05086685 \\ -0.05951506 \end{bmatrix} *
     \ \begin{bmatrix}
        & \ &  \\
        &  Weights & \\
        &  & 
      \end{bmatrix} = \begin{bmatrix} {} \\ {Query} \\ {} \end{bmatrix} $$
 
-    This should return 2 new numbers per token as we originally set our embedding size to 2.
+
 
 2. We do the same and multiply our embeddings against KEY specific weights and return KEY values.
 
-     $$\vec{e}_{i}  W = \vec{k}_i $$
+$$\vec{e}_{i}  W = \vec{k}_i $$
 
-    $$ \ \begin{bmatrix} 0.05086685 \\ -0.05951506 \end{bmatrix} *
+$$ \ \begin{bmatrix} 0.05086685 \\ -0.05951506 \end{bmatrix} *
     \ \begin{bmatrix}
         & & \\
         & Weights &  \\
