@@ -167,7 +167,7 @@ class TransformerBlock(layers.Layer):
 
 All the action occurs in our MultiHeadAttentionLayer (1). This is where we calculate query, key, and value. To keep it simple,, lets observe our sequence  [1970 6186 29623 3569] or token [ 222 1112  377  725 ...0 0 0 0].
 
-1. Create a QUERY per token by taking the dot product of our original position encoded embeddings and weights
+1. Create a QUERY per token by taking the dot product of our original position encoded embeddings and weights. I like to think of these as a reference vector.
     
      $$\vec{e}_{i}  W = \vec{q}_i $$
 
@@ -210,8 +210,26 @@ $$
                   & \frac{}{} & \frac{}{}
      \end{bmatrix} = \begin{bmatrix} {} \\ {Value} \\ {} \end{bmatrix} $$
 
-5. Last piece multiplies our probabilities against our values for each diagnosis.
+5. Last piece multiplies our probabilities against our values for each diagnosis.This then added to enrich our original embedding with influence from neighboring tokens.
 
+Another simpler way to wrap your head around this can be through looking at a multiplication table of our query, key, and value. 
+
+Upon completion of training, we can supply a new input token to generate the next predicted diagnosis code—potentially even producing both the immediate next token and the subsequent one.
+
+
+```python
+y_pred, attention_scores = model.predict(x, verbose=0)
+```
+
+```python
+Diagnosis Code: 486, Probability: 4.0302
+Diagnosis Code: v5789, Probability: 3.8886
+Diagnosis Code: 4280, Probability: 3.8728
+Diagnosis Code: 0389, Probability: 3.7248
+Diagnosis Code: 49121, Probability: 3.6444
+```
+
+This is just the beginning incorporate more information outside sequences of diagnosis such as chronic conditions or non-medical drivers of health that are also run in our neural network however as separate input that with its own individual layers and subsequentaly further enrich our diagnosis embeddings. 
 
 # Appendix
 
