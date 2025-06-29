@@ -196,18 +196,18 @@ $$ \ \begin{bmatrix} 0.05086685 \\ -0.05951506 \end{bmatrix} *
 
 
 $$ E K^{T} = similarity \ scores$$
-$$ \begin{bmatrix} {} \\ {Query} \\ {}  \end{bmatrix}   \begin{bmatrix} && {Key}  && \end{bmatrix} = \begin{bmatrix} {x} & {x} & {x} \\ {} & {x} & {x} \\ {} & {} & {x} \end{bmatrix} + Softmax
+$$ \begin{bmatrix} {} \\ {Query} \\ {}  \end{bmatrix}   \begin{bmatrix} && {Key}  && \end{bmatrix} = \begin{bmatrix} {x} & {x} & {x} \\ {0} & {x} & {x} \\ {0} & {0} & {x} \end{bmatrix} + Softmax
 $$
 
 4. VALUE also calculated using dot product and VALUE specific weights.
 
-     $$\vec{e}_{i}  W = \vec{v}_i $$
+$$\vec{e}_{i}  W = \vec{v}_i $$
 
-    $$ \ \begin{bmatrix} 0.05086685 \\ -0.05951506 \end{bmatrix} *
+$$ \ \begin{bmatrix} 0.05086685 \\ -0.05951506 \end{bmatrix} *
     \ \begin{bmatrix}
-       \frac{}{} & \frac{}{} &            \\[0.3em]
-       \frac{}{} &    W eights       & \frac{}{} \\[0.3em]
-                  & \frac{}{} & \frac{}{}
+        &  &   \\
+        &  Weights & \\
+        & & 
      \end{bmatrix} = \begin{bmatrix} {} \\ {Value} \\ {} \end{bmatrix} $$
 
 5. Last piece multiplies our probabilities against our values for each diagnosis.This then added to enrich our original embedding with influence from neighboring tokens.
