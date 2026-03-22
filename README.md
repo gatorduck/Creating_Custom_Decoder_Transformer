@@ -1,17 +1,25 @@
-# About
+# Healthcare Diagnosis Prediction with Custom Decoder Transformer
 
-My motivation is inspired by current large language models trained on sequences of tokens representing natural language. In this case, each diagnosis code (like an ICD-10 code) is treated as a token in a sequence, just like a word in a sentence. But instead of natural language, the sequence represents a patient’s chronological medical history. The goal of this custom decoder is to learn temporal patterns or predict future diagnoses. This is far from comprehensive or refined, and is created to inspire. Other ideas I intend to test include applying this to an agentic system, and training other inputs along with diangosis codes, such as non-medical drivers of health. 
+![Python](https://img.shields.io/badge/Python-3776AB?style=flat&logo=python&logoColor=white)
+![TensorFlow](https://img.shields.io/badge/TensorFlow-FF6F00?style=flat&logo=tensorflow&logoColor=white)
+![Keras](https://img.shields.io/badge/Keras-D00000?style=flat&logo=keras&logoColor=white)
+
+> **TL;DR:** A decoder-only transformer trained on patient diagnosis sequences (ICD-10 codes) to predict future diagnoses — treating medical history like a language. Given an input code, the model generates the most probable next diagnoses with confidence scores.
+
+## Motivation
+
+My motivation is inspired by current large language models trained on sequences of tokens representing natural language. In this case, each diagnosis code (like an ICD-10 code) is treated as a token in a sequence, just like a word in a sentence. But instead of natural language, the sequence represents a patient's chronological medical history. The goal of this custom decoder is to learn temporal patterns or predict future diagnoses. This is far from comprehensive or refined, and is created to inspire. Other ideas I intend to test include applying this to an agentic system, and training other inputs along with diagnosis codes, such as non-medical drivers of health. 
 
 What does this all mean? There is a clear distinction between traditional machine learning models, which are typically designed to predict a limited set of predefined outcomes, and this large language model (LLM). The LLM is capable of generating predictions for any number of outcomes, as long as they are provided—for example, diagnosis codes in this context.
 
 
-# Data
+## Data
 
-There are many types of healthcare data, with this example we use synthetic claims data found on CMS's website. The claims data in its original format cannot be used, so we have to conver it into a sequence of diagnosis, or 'sentences'. Note - another idea to test would be to create episodes or encounters based on groups of diagnosis, to mimic paragraphs or sentences in words, and train our llm to recognize macro and micro patterns. Too many ideas so little time.
+There are many types of healthcare data, with this example we use synthetic claims data found on CMS's website. The claims data in its original format cannot be used, so we have to convert it into a sequence of diagnosis, or 'sentences'. Note - another idea to test would be to create episodes or encounters based on groups of diagnosis, to mimic paragraphs or sentences in words, and train our LLM to recognize macro and micro patterns. Too many ideas so little time.
 
 ### Tokenization
 
-We first use a simple function to create a ordered sequence of diagnosis per patient and return those sequences as strings. We don't have to focus exactly on tokenization because we dont have punctuation, stemming, or stop words. We treat each diagnosis (dx) as a discrete chunk of words.
+We first use a simple function to create an ordered sequence of diagnosis per patient and return those sequences as strings. We don't have to focus exactly on tokenization because we don't have punctuation, stemming, or stop words. We treat each diagnosis (dx) as a discrete chunk of words.
 
 ```python
 
@@ -109,7 +117,7 @@ Token 725: [-0.06489329 -0.01285102]
 
 ```
 
-# Training
+## Training
 
 Next step uses Keras functional approach to build our model, the first several layers are created to build the framework. 
 
@@ -165,7 +173,7 @@ class TransformerBlock(layers.Layer):
 ```
 
 
-All the action occurs in our MultiHeadAttentionLayer (1). This is where we calculate query, key, and value. To keep it simple,, lets observe our sequence  [1970 6186 29623 3569] or token [ 222 1112  377  725 ...0 0 0 0].
+All the action occurs in our MultiHeadAttentionLayer (1). This is where we calculate query, key, and value. To keep it simple, let's observe our sequence  [1970 6186 29623 3569] or token [ 222 1112  377  725 ...0 0 0 0].
 
 1. Create a QUERY per token by taking the dot product of our original position encoded embeddings and weights. I like to think of these as a reference vector. This should return 2 new numbers per token as we originally set our embedding size to 2.
     
@@ -192,7 +200,7 @@ $$ \ \begin{bmatrix} 0.05086685 \\ -0.05951506 \end{bmatrix} *
      \end{bmatrix} = \begin{bmatrix} {} \\ {Key} \\ {} \end{bmatrix} $$
 
 
-3. We then take the dot product of our QUERY and KEY transposed. This calculates our similarities between our token of interest (as a QUERY) and our corresponding tokens in our sequence of diagnosis (KEYS). Note because this a decoder transformer we masks our values. The higher the similarity scores are the more our keys and querys align. Softmax is calculated for each of these in order to return attention probabilities.
+3. We then take the dot product of our QUERY and KEY transposed. This calculates our similarities between our token of interest (as a QUERY) and our corresponding tokens in our sequence of diagnosis (KEYS). Note because this a decoder transformer we mask our values. The higher the similarity scores are the more our keys and queries align. Softmax is calculated for each of these in order to return attention probabilities.
 
 
 $$ E K^{T} = similarity \ scores$$
@@ -214,9 +222,11 @@ $$ \ \begin{bmatrix} 0.05086685 \\ -0.05951506 \end{bmatrix} *
         & & 
      \end{bmatrix} = \begin{bmatrix} {} \\ {Value} \\ {} \end{bmatrix} $$
 
-5. Last piece multiplies our probabilities against our values for each diagnosis.This then added to enrich our original embedding with influence from neighboring tokens.
+5. Last piece multiplies our probabilities against our values for each diagnosis. This is then added to enrich our original embedding with influence from neighboring tokens.
 
 Another simpler way to wrap your head around this can be through looking at a multiplication table of our query, key, and value. 
+
+## Results
 
 Upon completion of training, we can supply a new input token to generate the next predicted diagnosis code—potentially even producing both the immediate next token and the subsequent one.
 
@@ -233,8 +243,28 @@ Diagnosis Code: 0389, Probability: 3.7248
 Diagnosis Code: 49121, Probability: 3.6444
 ```
 
-This is just the beginning incorporate more information outside sequences of diagnosis such as chronic conditions or non-medical drivers of health that are also run in our neural network however as separate input that with its own individual layers and subsequentaly further enrich our diagnosis embeddings. 
+## What's Next
 
-# Appendix
+This is just the beginning — we can incorporate more information outside sequences of diagnosis such as chronic conditions or non-medical drivers of health that are also run in our neural network however as separate input with its own individual layers and subsequently further enrich our diagnosis embeddings. 
 
-Data Source: Medicare Synthetic Claims Data found on *[CMS website](https://www.cms.gov/data-research/statistics-trends-and-reports/medicare-claims-synthetic-public-use-files)*
+## Project Structure
+
+```
+├── README.md
+├── .gitignore
+├── requirements.txt
+├── data/
+│   └── DE1_0_2008_to_2010_Inpatient_Claims_Sample_1.csv
+├── models/                 # Saved Keras model artifacts
+├── notebooks/
+│   ├── healthcare_transformer.ipynb
+│   ├── healthcare_transformer_compact.ipynb
+│   ├── generate_preds.ipynb
+│   └── shakespeare_transformer.ipynb
+└── src/
+    └── fn_data_prep.py
+```
+
+## Appendix
+
+Data Source: Medicare Synthetic Claims Data found on the *[CMS website](https://www.cms.gov/data-research/statistics-trends-and-reports/medicare-claims-synthetic-public-use-files)*
